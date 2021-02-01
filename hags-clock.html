@@ -1,0 +1,151 @@
+<div id="countholder">
+  <h1><strong>new sandwich in...</strong></h1>
+  <div>
+    <span class="days" id="days"></span>
+    <div class="smalltext"><strong>days</strong></div>
+  </div>
+  <div>
+    <span class="hours" id="hours"></span>
+    <div class="smalltext"><strong>hours</strong></div>
+  </div>
+  <div>
+    <span class="minutes" id="minutes"></span>
+    <div class="smalltext"><strong>minutes</strong></div>
+  </div>
+  <div>
+    <span class="seconds" id="seconds"></span>
+    <div class="smalltext"><strong>seconds</strong></div>
+  </div>
+</div>
+
+<script>
+  let curday;
+  let secTime;
+  let ticker;
+
+  function getSeconds() {
+    let nowDate = new Date();
+    let dy = 1; //Sunday through Saturday, 0 to 6
+    let countertime = new Date(
+      nowDate.getFullYear(),
+      nowDate.getMonth(),
+      nowDate.getDate(),
+      16,
+      0,
+      0
+    ); //16 out of 24 hours = 4pm
+
+    let curtime = nowDate.getTime(); //current time
+    let atime = countertime.getTime(); //countdown time
+    let diff = parseInt((atime - curtime) / 1000);
+    if (diff > 0) {
+      curday = dy - nowDate.getDay();
+    } else {
+      curday = dy - nowDate.getDay() - 1;
+    } //after countdown time
+    if (curday < 0) {
+      curday += 7;
+    } //already after countdown time, switch to next week
+    if (diff <= 0) {
+      diff += 86400 * 7;
+    }
+    startTimer(diff);
+  }
+
+  function startTimer(secs) {
+    secTime = parseInt(secs);
+    ticker = setInterval("tick()", 1000);
+    tick(); //initial count display
+  }
+
+  function tick() {
+    let secs = secTime;
+    if (secs > 0) {
+      secTime--;
+    } else {
+      clearInterval(ticker);
+      getSeconds(); //start over
+    }
+
+    let days = Math.floor(secs / 86400);
+    secs %= 86400;
+    let hours = Math.floor(secs / 3600);
+    secs %= 3600;
+    let mins = Math.floor(secs / 60);
+    secs %= 60;
+
+    //update the time display
+    document.getElementById("days").innerHTML = curday;
+    document.getElementById("hours").innerHTML =
+      (hours < 10 ? "0" : "") + hours;
+    document.getElementById("minutes").innerHTML =
+      (mins < 10 ? "0" : "") + mins;
+    document.getElementById("seconds").innerHTML =
+      (secs < 10 ? "0" : "") + secs;
+  }
+
+  onload: getSeconds();
+</script>
+
+<style>
+  body {
+    text-align: center;
+    font-family: ibm-plex-mono;
+    font-weight: 50;
+  }
+
+  h1 {
+    color: white;
+    font-weight: 100;
+    font-size: 1.2em;
+    margin: 40px 0px 20px;
+  }
+
+  #countholder .link {
+    margin-top: 1vh;
+  }
+
+  #countholder a {
+    display: inline-block;
+    color: white;
+    font-size: 0.5em;
+    padding: 1vw;
+    border-radius: 10px;
+    text-decoration: none;
+  }
+
+  #countholder a:hover {
+    background: #ec6d48;
+  }
+
+  #countholder {
+    font-family: ibm-plex-mono;
+    color: white;
+    display: inline-block;
+    font-weight: 100;
+    text-align: center;
+    font-size: 0.8em;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 1vh;
+    line-height: 1.4;
+  }
+
+  #countholder > div {
+    padding: 4px 10px;
+    border-radius: 3px;
+    background: #ec6d48;
+    display: inline-block;
+  }
+
+  #countholder div > span {
+    border-radius: 3px;
+    background: #ec6d48;
+    display: inline-block;
+  }
+
+  #countholder .smalltext {
+    padding-top: 5px;
+    font-size: 1em;
+  }
+</style>
